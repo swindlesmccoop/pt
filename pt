@@ -1,0 +1,49 @@
+#!/bin/sh
+
+getinfo () {
+	NAME="$(grep -Po '(?<=<dd itemprop="name">).*(?=</dd>)' .result)"
+	[ -z "$NAME" ] && echo "Invalid input! Exiting." && exit
+	echo "Name: $NAME"
+	echo "Symbol: $(grep -Po '(?<=<dd itemprop="symbol">).*(?=</dd>)' .result)"
+	echo "Atomic Number: $(grep -Po '(?<=<dd itemprop="atomic_number">).*(?=</dd>)' .result)"
+	echo "Atomic Weight: $(grep -Po '(?<=<dd class="active" itemprop="atomic_weight">).*(?=</dd>)' .result)"
+	echo ""
+	echo "First Ionization Potential: $(grep -Po '(?<=<dd itemprop="first_ionization_potential">).*(?=</dd>)' .result)"
+	echo "Electronegativity: $(grep -Po '(?<=<dd itemprop="electronegativity">).*(?=</dd>)' .result)"
+	echo "Electron Configuration: $(grep -Po '(?<=<dd itemprop="electronic_configuration">).*(?=</dd>)' .result)"
+	echo "Ionic Radius: $(grep -Po '(?<=<dd itemprop="ionic_radius">).*(?=</dd>)' .result)"
+	echo ""
+	echo "Location on Table: Row $(grep -Po '(?<=<dd itemprop="row">).*(?=</dd>)' .result), Column $(grep -Po '(?<=<dd itemprop="column">).*(?=</dd>)' .result)"
+}
+
+symbol () {
+	[ "$2" = "" ] && read -r -p "Enter input: " INPUT || INPUT="$2"
+	grep -A 46 "itemscope itemid=\"$INPUT\"" ptdata.txt > .result
+	getinfo
+	rm .result
+}
+
+number () {
+	[ "$2" = "" ] && read -r -p "Enter input: " INPUT || INPUT="$2"
+	grep -B 4 "<dd itemprop=\"atomic_number\">$INPUT</dd>" ptdata.txt > .result
+	grep -A 42 "<dd itemprop=\"atomic_number\">$INPUT</dd>" ptdata.txt >> .result
+	getinfo
+}
+
+pt_help () {
+	printf 'Periodic Table (pt) by swindlesmccoop\n\n'
+	echo "Usage: pt [-hns] [input]"
+	echo "-h, --help: Print this help message"
+	echo "-n [Atomic Number]: Get info for [Atomic Number]"
+	echo "-s [Symbol]: Get info for element [Symbol]"
+	exit
+}
+
+#if no parameters are supplied, print help
+[ $# -eq 0 ] && pt_help
+case "$1" in
+	-s) symbol "$@" ;;
+	-n) number "$@" ;;
+	-h) pt_help ;;
+	--help) pt_help ;;
+esac
