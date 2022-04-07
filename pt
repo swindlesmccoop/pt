@@ -1,32 +1,34 @@
 #!/bin/sh
+PTDATA="$HOME/.local/share/ptdata"
+RESULT="$HOME/.cache/ptresult"
 
 getinfo () {
-	NAME="$(grep -Po '(?<=<dd itemprop="name">).*(?=</dd>)' .result)"
+	NAME="$(grep -Po '(?<=<dd itemprop="name">).*(?=</dd>)' "$RESULT")"
 	[ -z "$NAME" ] && echo "Invalid input! Exiting." && exit
 	echo "Name: $NAME"
-	echo "Symbol: $(grep -Po '(?<=<dd itemprop="symbol">).*(?=</dd>)' .result)"
-	echo "Atomic Number: $(grep -Po '(?<=<dd itemprop="atomic_number">).*(?=</dd>)' .result)"
-	echo "Atomic Weight: $(grep -Po '(?<=<dd class="active" itemprop="atomic_weight">).*(?=</dd>)' .result)"
+	echo "Symbol: $(grep -Po '(?<=<dd itemprop="symbol">).*(?=</dd>)' "$RESULT")"
+	echo "Atomic Number: $(grep -Po '(?<=<dd itemprop="atomic_number">).*(?=</dd>)' "$RESULT")"
+	echo "Atomic Weight: $(grep -Po '(?<=<dd class="active" itemprop="atomic_weight">).*(?=</dd>)' "$RESULT")"
 	echo ""
-	echo "First Ionization Potential: $(grep -Po '(?<=<dd itemprop="first_ionization_potential">).*(?=</dd>)' .result)"
-	echo "Electronegativity: $(grep -Po '(?<=<dd itemprop="electronegativity">).*(?=</dd>)' .result)"
-	echo "Electron Configuration: $(grep -Po '(?<=<dd itemprop="electronic_configuration">).*(?=</dd>)' .result)"
-	echo "Ionic Radius: $(grep -Po '(?<=<dd itemprop="ionic_radius">).*(?=</dd>)' .result)"
+	echo "First Ionization Potential: $(grep -Po '(?<=<dd itemprop="first_ionization_potential">).*(?=</dd>)' "$RESULT")"
+	echo "Electronegativity: $(grep -Po '(?<=<dd itemprop="electronegativity">).*(?=</dd>)' "$RESULT")"
+	echo "Electron Configuration: $(grep -Po '(?<=<dd itemprop="electronic_configuration">).*(?=</dd>)' "$RESULT")"
+	echo "Ionic Radius: $(grep -Po '(?<=<dd itemprop="ionic_radius">).*(?=</dd>)' "$RESULT")"
 	echo ""
-	echo "Location on Table: Row $(grep -Po '(?<=<dd itemprop="row">).*(?=</dd>)' .result), Column $(grep -Po '(?<=<dd itemprop="column">).*(?=</dd>)' .result)"
+	echo "Location on Table: Row $(grep -Po '(?<=<dd itemprop="row">).*(?=</dd>)' "$RESULT"), Column $(grep -Po '(?<=<dd itemprop="column">).*(?=</dd>)' .result)"
 }
 
 symbol () {
 	[ "$2" = "" ] && read -r -p "Enter input: " INPUT || INPUT="$2"
-	grep -A 46 "itemscope itemid=\"$INPUT\"" ptdata.txt > .result
+	grep -A 46 "itemscope itemid=\"$INPUT\"" "$PTDATA" > "$RESULT"
 	getinfo
-	rm .result
+	rm "$RESULT"
 }
 
 number () {
 	[ "$2" = "" ] && read -r -p "Enter input: " INPUT || INPUT="$2"
-	grep -B 4 "<dd itemprop=\"atomic_number\">$INPUT</dd>" ptdata.txt > .result
-	grep -A 42 "<dd itemprop=\"atomic_number\">$INPUT</dd>" ptdata.txt >> .result
+	grep -B 4 "<dd itemprop=\"atomic_number\">$INPUT</dd>" "$PTDATA" > "$RESULT"
+	grep -A 42 "<dd itemprop=\"atomic_number\">$INPUT</dd>" "$PTDATA" >> "$RESULT"
 	getinfo
 }
 
