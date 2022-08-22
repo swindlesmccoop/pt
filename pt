@@ -1,5 +1,5 @@
 #!/bin/sh
-PTDATA="/usr/local/share/ptdata"
+PTDATA="/usr/local/share/ptdata.txt"
 RESULT="$HOME/.cache/ptresult"
 
 getinfo () {
@@ -15,7 +15,7 @@ getinfo () {
 	echo "Electron Configuration: $(grep -Po '(?<=<dd itemprop="electronic_configuration">).*(?=</dd>)' "$RESULT")"
 	echo "Ionic Radius: $(grep -Po '(?<=<dd itemprop="ionic_radius">).*(?=</dd>)' "$RESULT")"
 	echo ""
-	echo "Location on Table: Row $(grep -Po '(?<=<dd itemprop="row">).*(?=</dd>)' "$RESULT"), Column $(grep -Po '(?<=<dd itemprop="column">).*(?=</dd>)' .result)"
+	echo "Location on Table: Row $(grep -Po '(?<=<dd itemprop="row">).*(?=</dd>)' "$RESULT"), Column $(grep -Po '(?<=<dd itemprop="column">).*(?=</dd>)' "$RESULT")"
 }
 
 symbol () {
