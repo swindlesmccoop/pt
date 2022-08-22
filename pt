@@ -1,5 +1,5 @@
 #!/bin/sh
-PTDATA="$HOME/.local/share/ptdata"
+PTDATA="/usr/local/share/ptdata"
 RESULT="$HOME/.cache/ptresult"
 
 getinfo () {
