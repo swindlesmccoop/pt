@@ -7,7 +7,7 @@ getinfo () {
 	[ -z "$NAME" ] && echo "Invalid input! Exiting." && exit
 	echo "Name: $NAME"
 	echo "Symbol: $(grep -Po '(?<=<dd itemprop="symbol">).*(?=</dd>)' "$RESULT")"
-	echo "Atomic Number: $(grep -Po '(?<=<dd itemprop="atomic_number">).*(?=</dd>)' "$RESULT")"
+	echo "Atomic Number: $(grep -Po '(?<=<dd itemprop="atomic_number">).*(?=</dd>)' "$RESULT" | head -n 1)"
 	echo "Atomic Weight: $(grep -Po '(?<=<dd class="active" itemprop="atomic_weight">).*(?=</dd>)' "$RESULT")"
 	echo ""
 	echo "First Ionization Potential: $(grep -Po '(?<=<dd itemprop="first_ionization_potential">).*(?=</dd>)' "$RESULT")"
